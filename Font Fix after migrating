@@ -1,0 +1,6 @@
+Add this at the very top of the .htaccess file (before any WordPress rules):
+
+
+<IfModule mod_headers.c>
+Header set Access-Control-Allow-Origin "*"
+</IfModule>
