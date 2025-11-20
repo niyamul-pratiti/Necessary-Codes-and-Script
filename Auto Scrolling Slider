@@ -1,0 +1,39 @@
+<script src="
+https://cdn.jsdelivr.net/npm/@splidejs/splide-extension-auto-scroll@0.5.3/dist/js/splide-extension-auto-scroll.min.js
+"></script>
+  
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+  // Array of slider IDs that you want to apply auto-scroll to
+  const sliderIds = ['vnlkuh', 'bgpbtw','csykfm','wgngoq','tmltmg','zvfluu','awianf','ndzhce','degseq','traaud','dppvvs','dszmtz','ntykjg','qmykqf','tmfgtl','gumfko','lkspwn','wblggp']; // Add your slider IDs here
+  
+  // Auto-scroll configuration (you can customize these settings)
+  const autoScrollConfig = {
+    speed: 0.5,
+    pauseOnHover: true,
+    pauseOnFocus: true
+  };
+  
+  // Define a function to update auto-scroll for specified sliders
+  const updateAutoScrollForSliders = () => {
+    sliderIds.forEach(sliderId => {
+      const splideInstance = window.bricksData.splideInstances[sliderId];
+      if (splideInstance) {
+        // Destroy the current instance
+        splideInstance.destroy();
+        
+        // Mount with extensions
+        splideInstance.mount(window.splide.Extensions);
+        
+        // Apply auto-scroll options
+        splideInstance.options = { 
+          autoScroll: autoScrollConfig
+        };
+      }
+    });
+  }
+  
+  // Need some delay for Bricks to init the sliders
+  setTimeout(updateAutoScrollForSliders, 250);
+});
+</script>
