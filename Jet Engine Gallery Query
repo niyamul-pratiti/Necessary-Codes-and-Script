@@ -1,0 +1,82 @@
+How to add Jetengine Gallery Query:
+
+
+Let’s create a custom PHP function that returns an array of gallery image IDs given the Gallery-type field’s key.
+
+Add the following in child theme‘s functions.php (do not include the opening PHP tag if adding near the end) or a code snippets plugin:
+
+<?php
+/**
+ * Returns an array of image IDs stored in gallery meta field
+ * 
+ * @param  string $field_key Gallery field meta key
+ * @param  int    $post_id   Post ID to get field from. If not set - will try to use current post.
+ * @return array
+ */
+function bl_get_jet_engine_gallery( $field_key = '', $post_id = null ): array {
+	$ids = [];
+
+	if ( ! $post_id ) $post_id = get_the_ID();
+
+	if ( ! $post_id || ! $field_key ) return $ids;
+
+	$meta = get_post_meta( $post_id, $field_key, true );
+
+	if ( ! $meta ) return $ids;
+
+	return explode( ',', $meta );
+}
+Step 4
+Whitelist the bl_get_jet_engine_gallery function.
+
+Ex.:
+
+<?php 
+
+add_filter( 'bricks/code/echo_function_names', function() {
+  return [
+    'bl_get_jet_engine_gallery'
+  ];
+} );
+You should also add other functions (native or custom) being used in your Bricks instance besides bl_get_jet_engine_gallery. This can be checked at Bricks → Settings → Custom code by clicking the Code review button.
+
+More info on whitelisting can be found here.
+
+Step 5
+Create and edit the single template for your post type.
+
+Add a Section and inside its Container, a Slider (Nestable) element.
+
+Delete Slide 2 and Slide 3.
+
+Select Slide 1 and turn on query loop.
+
+In the PHP query editor, paste:
+
+$je_gallery_image_ids = bl_get_jet_engine_gallery( 'game-gallery' );
+
+if ( $je_gallery_image_ids ) {
+  return [
+    'post_type' => 'attachment',
+    'post_status' => 'inherit',
+    'posts_per_page' => 100, // a large number
+    'no_found_rows' => true,
+    'post__in' => $je_gallery_image_ids,
+    'orderby' => 'post__in',
+  ];
+} else {
+  return [
+    'post__in' => [ 0 ],
+  ];
+}
+Replace game-gallery with the Name/ID of your Gallery field.
+
+For showing the gallery image (whether as source of an Image element or as background), use:
+
+{post_id}
+
+For showing the gallery image’s title, use:
+
+{post_title}
+
+For other image data, refer to Media File Attachment Data in Bricks tutorial.
